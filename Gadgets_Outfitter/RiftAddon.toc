@@ -1,0 +1,27 @@
+Identifier  = "Gadgets_Outfitter"
+Name        = "Gadgets: Outfitter"
+Description = "Allows the player to set up and manage outfit sets for swapping gear between character sheet, wardrobes and inventory."
+Author      = "Wykkyd@Laethys Updates by Mael@Wolfsbane, raie@blightweald, hellshound38 "
+Version     = "2.11.18.5"
+Email       = "wykkyd.gaming@gmail.com"
+Environment = {"1.11", "2.0", "2.3"} 
+
+RunOnStartup    = { 
+    "Outfitter.Globals.lua", 
+    "Outfitter.ImageSlider.lua", 
+    "Outfitter.equipengine.lua", 
+    "Outfitter.EquipSets.lua", 
+    "Outfitter.TooltipWindow.lua", 
+    "Outfitter.Window.lua", 
+    "Outfitter.Window.Form.lua", 
+    "Outfitter.MassReplacementWindow.lua",
+    "Outfitter.MassReplacementWindow.Form.lua",
+    "Outfitter.lua", 
+}
+SavedVariables  = {}
+Embed           = {}
+Dependencies    = { 
+	kAlert = {"optional", "before"}, 
+	Gadgets = {"required", "before"}, 
+	libWykkyd = {"required", "before"}, 
+}
