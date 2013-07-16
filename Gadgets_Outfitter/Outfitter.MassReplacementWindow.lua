@@ -29,7 +29,9 @@ function Wykkyd.Outfitter.OpenMassReplacementWindow(contextCount)
 	window:SetWidth(265)
 	
 	local heightMargin = -20
-	table.foreach(Wykkyd.Outfitter.ContextConfig[myCount].EquipSetList,function()heightMargin=heightMargin+20 end)
+	for k,v in pairs(Wykkyd.Outfitter.ContextConfig[myCount].EquipSetList) do
+		heightMargin=heightMargin+20
+	end
 	window:SetHeight(230+ heightMargin)
 	window:SetLayer(11000)
 	window:SetTitle("mass replacement tool")
