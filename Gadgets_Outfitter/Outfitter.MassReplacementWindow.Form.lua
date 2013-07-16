@@ -52,18 +52,37 @@ function Wykkyd.Outfitter.MassReplacementWindow.BuildForm(myCount)
 	offhandCheckBoxLabel:SetText("offslot")
 	offHandCheckbox:SetPoint("CENTER", slotWrapper , "CENTER", 40, 0)
 	offhandCheckBoxLabel:SetPoint("LEFTCENTER", offHandCheckbox, "RIGHTCENTER", 2, 0)
-	offHandCheckbox:SetEnabled(false)	
+	offHandCheckbox:SetEnabled(false)
+	offHandCheckbox:SetVisible(false)	
+	offhandCheckBoxLabel:SetVisible(false)	
+	
+	local errorLbl = wyk.frame.CreateText(uName .. "errorLbl", fg)
+	errorLbl:SetText("")
+	errorLbl:SetFontColor(255,0,0,1)
+	errorLbl:SetPoint("TOPCENTER",fg, "TOPCENTER", 0,20)
+	
     
     slotIcon:EventAttach(Event.UI.Input.Mouse.Left.Up, function(self, h)
-		if not Wykkyd.Outfitter.LeftMouseDown then
 			local cursor, held = Inspect.Cursor()
 			if(cursor and cursor == "item") then
 				Command.Item.Standard.Drop(held)
 				itemToSave = Inspect.Item.Detail(held)
 				local cat = split(itemToSave.category ,"%S+")
-				if cat[2] == "onehand" or cat[3] == "ring" then
+				errorLbl:SetText("")
+				if cat[2] == "onehand" then
+					offhandCheckBoxLabel:SetText("offhand slot")
 					offHandCheckbox:SetEnabled(true)
+					offHandCheckbox:SetVisible(true)	
+					offhandCheckBoxLabel:SetVisible(true)	
+				elseif cat[3] == "ring" then
+					offhandCheckBoxLabel:SetText("2nd ring slot")
+					offHandCheckbox:SetEnabled(true)
+					offHandCheckbox:SetVisible(true)	
+					offhandCheckBoxLabel:SetVisible(true)	
+				
 				else
+					offHandCheckbox:SetVisible(false)	
+					offhandCheckBoxLabel:SetVisible(false)	
 					offHandCheckbox:SetEnabled(false)
 					offHandCheckbox:SetChecked(false)
 				end
@@ -97,8 +116,7 @@ function Wykkyd.Outfitter.MassReplacementWindow.BuildForm(myCount)
 
 			end
 		end
-		Wykkyd.Outfitter.LeftMouseDown = false
-	end, "Event.UI.Input.Mouse.Left.Up")
+		, "Event.UI.Input.Mouse.Left.Up")
 	
 		
 	local margin = 60 - (fg:GetHeight()/4)
@@ -119,7 +137,11 @@ function Wykkyd.Outfitter.MassReplacementWindow.BuildForm(myCount)
 				if checkbox:GetChecked() then
 				  table.insert(indexes, value)
 				else
-				  table.foreach(indexes, function(k,v) if v == value then table.remove(indexes,k) end end )
+				  for k, v in pairs (indexes) do
+					if v == value then
+						table.remove(indexes,k) 
+					end
+				  end 
 				end
 			end
 		end
@@ -149,7 +171,11 @@ function Wykkyd.Outfitter.MassReplacementWindow.BuildForm(myCount)
 		itemToSave.category = newCategory
 	end
 	slotIcon:SetTexture(wyk.vars.Images.slots.chest.src, wyk.vars.Images.slots.chest.file)
+	if itemToSave.id ~= nil then
 	Wykkyd.Outfitter.SaveItem(itemToSave, indexes, myCount)
+	else
+	errorLbl:SetText("Drag an item in the slot first!")
+	end
 	end
 	, "Event.UI.Input.Mouse.Left.Up")
 	end
@@ -210,8 +236,8 @@ function Wykkyd.Outfitter.SaveItem(item, indexes, myCount)
 		print("nice try! that's not an equipable item!")
 		return
 	end
-	table.foreach(indexes, 
-	function(key,val) 
+	
+	for key,val in pairs(indexes) do
 		for equipSetKey,equipSetValue in pairs(Wykkyd.Outfitter.ContextConfig[myCount].EquipSetGear) do
 			if equipSetValue.id == val then
 				local newGear = equipSetValue.gear
@@ -237,7 +263,6 @@ function Wykkyd.Outfitter.SaveItem(item, indexes, myCount)
 			end
 		end
 	end
-	)
 end
 
 	
