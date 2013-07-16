@@ -2,9 +2,9 @@ Identifier  = "libWykkyd"
 Name        = "Wykkyd Library"
 Description = "Wykkyd's library of global variables, functions, resources and frame handlers."
 Author      = "Wykkyd@Laethys Updates by Mael@Wolfsbane"
-Version     = "1.10.28.3"
-Email       = "wykkyd.gaming@gmail.com"
-Environment = {"1.9", "1.10", "1.11","2.3"} 
+Version     = "2.3.1"
+Email       = "merxion69@hotmail.com"
+Environment = {"2.3"} 
 
 RunOnStartup    = { 
     "wyk.lua", 
