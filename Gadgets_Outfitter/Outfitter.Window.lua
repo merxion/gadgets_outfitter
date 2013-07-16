@@ -65,41 +65,20 @@ function Wykkyd.Outfitter.BuildEquipSlot(myCount, slot, attachTo, size, side, pa
 		SetLayer = 10,
 	}, false)
     slotWrapper.icon = slotIcon
-    --slotIcon.Event.MouseIn = function()
-    --                       if Wykkyd.Outfitter.displayedGear[myCount][slot] then 
-    --                            --local mouse = Inspect.Mouse()
-    --                            Wykkyd.Outfitter.OpenTooltipWindow(myCount, Wykkyd.Outfitter.displayedGear[myCount][slot]) 
-    --                        end
-    --                    end
 	slotIcon:EventAttach(Event.UI.Input.Mouse.Cursor.In,function(self, h)
-															if Wykkyd.Outfitter.displayedGear[myCount][slot] then 
-																--local mouse = Inspect.Mouse()
-																Wykkyd.Outfitter.OpenTooltipWindow(myCount, Wykkyd.Outfitter.displayedGear[myCount][slot]) 
-															end	
-														end, "Event.UI.Input.Mouse.Cursor.In")
-    --slotIcon.Event.MouseOut = function()
-    --                        Wykkyd.Outfitter.OpenTooltipWindow(myCount, nil)
-    --                    end
+		if Wykkyd.Outfitter.displayedGear[myCount][slot] then 
+			--local mouse = Inspect.Mouse()
+			Wykkyd.Outfitter.OpenTooltipWindow(myCount, Wykkyd.Outfitter.displayedGear[myCount][slot]) 
+		end	
+	end, "Event.UI.Input.Mouse.Cursor.In")
+
 	slotIcon:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function(self, h)
 		Wykkyd.Outfitter.OpenTooltipWindow(myCount, nil)
 	end, "Event.UI.Input.Mouse.Cursor.Out")
     
-	--slotIcon.Event.LeftDown = function() Wykkyd.Outfitter.LeftMouseDown = true; end
 	slotIcon:EventAttach(Event.UI.Input.Mouse.Left.Down, function(self, h)
 		Wykkyd.Outfitter.LeftMouseDown = true;
 	end, "Event.UI.Input.Mouse.Left.Down")	
-	
-    --slotIcon.Event.LeftUp = function()
-    --                                if not Wykkyd.Outfitter.LeftMouseDown then
-    --                                    local cursor, held = Inspect.Cursor()
-    --                                    if(cursor and cursor == "item") then
-    --                                        pcall(Command.Item.Standard.Drop, held)
-    --                                        Wykkyd.Outfitter.AttemptEquip(held, slot, Wykkyd.Outfitter.FindEmptySlots())
-    --                                        Wykkyd.Outfitter.ChangeGear()
-    --                                    end
-    --                                end
-    --                                Wykkyd.Outfitter.LeftMouseDown = false
-    --                            end
     
 	slotIcon:EventAttach(Event.UI.Input.Mouse.Left.Up, function(self, h)
 		if not Wykkyd.Outfitter.LeftMouseDown then
@@ -148,20 +127,7 @@ function Wykkyd.Outfitter.BuildEquipSlot(myCount, slot, attachTo, size, side, pa
 			SetAlpha = .9,
 			SetLayer = 24,
 		}, false)
-        --slotIgnore.Event.LeftClick = function()
-        --    if not Wykkyd.Outfitter.ContextWindow[myCount] then return end
-        --    local window = Wykkyd.Outfitter.ContextWindow[myCount]
-        --    local content = window:GetContent()
-        --    if Wykkyd.Outfitter.ignoredSlots[myCount][slot] then
-        --        Wykkyd.Outfitter.ignoredSlots[myCount][slot] = false
-        --    else
-        --        Wykkyd.Outfitter.ignoredSlots[myCount][slot] = true
-        --    end
-        --    local location = content.gear[slot]
-        --    if location then
-        --        location.ignore:SetVisible(Wykkyd.Outfitter.ignoredSlots[myCount][slot])
-        --    end
-        --end
+
 		slotIgnore:EventAttach(Event.UI.Input.Mouse.Left.Click, function(self, h)
             if not Wykkyd.Outfitter.ContextWindow[myCount] then return end
             local window = Wykkyd.Outfitter.ContextWindow[myCount]
@@ -177,20 +143,9 @@ function Wykkyd.Outfitter.BuildEquipSlot(myCount, slot, attachTo, size, side, pa
             end
 		end, "Event.UI.Input.Mouse.Left.Click")
 
-        --slotIgnore.Event.LeftDown = function() Wykkyd.Outfitter.LeftMouseDown = true; end
 		slotIgnore:EventAttach(Event.UI.Input.Mouse.Left.Down, function(self, h)
 			Wykkyd.Outfitter.LeftMouseDown = true;
 		end, "Event.UI.Input.Mouse.Left.Down")
-		
-        --slotIgnore.Event.LeftUp = function()
-        --    if not Wykkyd.Outfitter.LeftMouseDown then
-        --        local cursor, held = Inspect.Cursor()
-        --        if(cursor and cursor == "item") then
-        --            pcall(Command.Item.Standard.Drop, held)
-        --       end
-        --    end
-        --    Wykkyd.Outfitter.LeftMouseDown = false
-        --end
         
 		slotIgnore:EventAttach(Event.UI.Input.Mouse.Left.Up, function(self, h)
             if not Wykkyd.Outfitter.LeftMouseDown then
@@ -374,8 +329,6 @@ function Wykkyd.Outfitter.LoadOutfit( myCount, set )
 end
 
 function Wykkyd.Outfitter.UpdateWindow(updates)
-	--print("checking updates")
-	--wyk.func.TPrint(updates)
     Wykkyd.Outfitter.ChangeGear()
     for ii = 1, wykkydContextCount, 1 do
         if Wykkyd.Outfitter.ContextWindowOpen[ii] then
@@ -394,9 +347,7 @@ function Wykkyd.Outfitter.WindowPos(newX, newY)
 end
 
 function Wykkyd.Outfitter.OpenWindow(contextCount) --id)
-	--gadgetId = id
-	--gadgetConfig =  wtxGadgets[gadgetId]
-	--gadgetFactory = WT.GadgetFactories[gadgetConfig.type:lower()]
+
     local fldName = "wykOutfitter"
     
     local myCount = contextCount
@@ -427,21 +378,11 @@ function Wykkyd.Outfitter.OpenWindow(contextCount) --id)
 		window:SetLayer(11000)
         window:SetTitle("Gadgets: Outfitter  v"..WykkydOutfitterVersion)
 
-        --window.Event.LeftDown = function() Wykkyd.Outfitter.LeftMouseDown = true; end
 		window:EventAttach(Event.UI.Input.Mouse.Left.Down, function(self, h)
 			Wykkyd.Outfitter.LeftMouseDown = true;
 		end, "Event.UI.Input.Mouse.Left.Down")
-		
-		
---        window.Event.LeftUp = function()
---			if not Wykkyd.Outfitter.LeftMouseDown then
---				local cursor, held = Inspect.Cursor()
---				if(cursor and cursor == "item") then
---					pcall(Command.Item.Standard.Drop, held)
---				end
---			end
---			Wykkyd.Outfitter.LeftMouseDown = false
---		end
+	
+
 		window:EventAttach(Event.UI.Input.Mouse.Left.Up, function(self, h)
 			if not Wykkyd.Outfitter.LeftMouseDown then
 				local cursor, held = Inspect.Cursor()
@@ -452,12 +393,9 @@ function Wykkyd.Outfitter.OpenWindow(contextCount) --id)
 			Wykkyd.Outfitter.LeftMouseDown = false
 		end, "Event.UI.Input.Mouse.Left.Up")
 		
-        --window.Event.Move = function() Wykkyd.Outfitter.WindowPos( window:GetLeft(), window:GetTop() ) end
 		window:EventAttach(Event.UI.Input.Mouse.Cursor.Move, function(self,h)
 			Wykkyd.Outfitter.WindowPos( window:GetLeft(), window:GetTop() )
 		end,"Event.UI.Input.Mouse.Cursor.Move")
-		
-		--window.Event.MouseOut = function() Wykkyd.Outfitter.ReleaseCursor(); end
         
 		window:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function(self, h)
 			Wykkyd.Outfitter.ReleaseCursor();
@@ -470,23 +408,11 @@ function Wykkyd.Outfitter.OpenWindow(contextCount) --id)
         local outfitFrame = wyk.frame.CreateFrame( fldName.."_frame", content)
 		outfitFrame:SetPoint("TOPLEFT", content, "TOPLEFT", 8, 8)
 		outfitFrame:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", -8, -8)	
-        --outfitFrame.Event.LeftDown = function() Wykkyd.Outfitter.LeftMouseDown = true; end
-		
+	
 		outfitFrame:EventAttach(Event.UI.Input.Mouse.Left.Down, function(self, h)
 			Wykkyd.Outfitter.LeftMouseDown = true;
 		end, "Event.UI.Input.Mouse.Left.Down")
-		
-		
-        --outfitFrame.Event.LeftUp = function()
-		--	if not Wykkyd.Outfitter.LeftMouseDown then
-		--		local cursor, held = Inspect.Cursor()
-		--		if(cursor and cursor == "item") then
-		--			pcall(Command.Item.Standard.Drop, held)
-		--			Wykkyd.Outfitter.AttemptEquip(held, nil, Wykkyd.Outfitter.FindEmptySlots())
-		--		end
-		--	end
-		--	Wykkyd.Outfitter.LeftMouseDown = false
-		--end
+
         outfitFrame:EventAttach(Event.UI.Input.Mouse.Left.Up, function(self, h)
 			if not Wykkyd.Outfitter.LeftMouseDown then
 				local cursor, held = Inspect.Cursor()
@@ -509,12 +435,6 @@ function Wykkyd.Outfitter.OpenWindow(contextCount) --id)
         )
         btnCancel:SetLayer( 3 )
 		btnCancel:SetPoint("TOPRIGHT", window, "TOPRIGHT", 6, 2)
-		--btnCancel.Event.LeftClick = function() 
-		--	window:SetVisible(false); 
-		--	WT.Utility.ClearKeyFocus(window); 
-		--	Wykkyd.Outfitter.ContextWindowOpen[myCount] = false; 
-		--	wykOBBHighlight(0); 
-		--end
         btnCancel:EventAttach(Event.UI.Input.Mouse.Left.Click, function(self, h)
 			window:SetVisible(false); 
 			WT.Utility.ClearKeyFocus(window); 
@@ -522,21 +442,10 @@ function Wykkyd.Outfitter.OpenWindow(contextCount) --id)
 			wykOBBHighlight(0); 
 		end, "Event.UI.Input.Mouse.Left.Click")
 		
-		
-		--btnCancel.Event.LeftDown = function() Wykkyd.Outfitter.LeftMouseDown = true; end
         btnCancel:EventAttach(Event.UI.Input.Mouse.Left.Down, function(self, h)
 			Wykkyd.Outfitter.LeftMouseDown = true;
 		end, "Event.UI.Input.Mouse.Left.Down")
 
-        --btnCancel.Event.LeftUp = function()
-		--	if not Wykkyd.Outfitter.LeftMouseDown then
-		--		local cursor, held = Inspect.Cursor()
-		--		if(cursor and cursor == "item") then
-		--			pcall(Command.Item.Standard.Drop, held)
-		--		end
-		--	end
-		--	Wykkyd.Outfitter.LeftMouseDown = false
-		--end
         btnCancel:EventAttach(Event.UI.Input.Mouse.Left.Up, function(self, h)
 			if not Wykkyd.Outfitter.LeftMouseDown then
 				local cursor, held = Inspect.Cursor()
@@ -579,7 +488,6 @@ function Wykkyd.Outfitter.OpenWindow(contextCount) --id)
     if not Wykkyd.Outfitter.ContextWindowPrepped[myCount] then
         Wykkyd.Outfitter.ContextWindowPrepped[myCount] = true
 		Command.Event.Attach(Event.Item.Slot, Wykkyd.Outfitter.UpdateWindow, "Wykkyd.Outfitter.UpdateWindow")
-        --table.insert(Event.Item.Slot,{Wykkyd.Outfitter.UpdateWindow, "Gadgets_Outfitter", "Wykkyd.Outfitter.UpdateWindow" })
     end
 end
 

@@ -374,7 +374,6 @@ local function Create(configuration)
 	--table.insert(Sigils, obbBorder)
     if not Wykkyd.Outfitter.watchdoginserted then
 		Command.Event.Attach(Event.System.Update.End, StartUp, "StartUp")
-	    --table.insert(Event.System.Update.End, {StartUp, "Gadgets_Outfitter", "StartUp"})
         Wykkyd.Outfitter.watchdoginserted = true
     end
     --Wykkyd.checkCombat()

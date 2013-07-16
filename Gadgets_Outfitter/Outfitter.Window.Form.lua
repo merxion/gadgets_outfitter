@@ -1,6 +1,6 @@
 
 local cHdr = { r =     1.0, g =     1.0, b =     0.0 }
-
+local rolesAmount = 0
 Wykkyd.Outfitter.Selected = {}
 
 function Wykkyd.Outfitter.changePos(slider, iMod)
@@ -14,25 +14,9 @@ function Wykkyd.Outfitter.changePos(slider, iMod)
 end
 
 function Wykkyd.Outfitter.AttachDragControls(thing, includeEquip)
-    --thing.Event.LeftDown = function() Wykkyd.Outfitter.LeftMouseDown = true; end
-
 	thing:EventAttach(Event.UI.Input.Mouse.Left.Down, function(self, h)
 		Wykkyd.Outfitter.LeftMouseDown = true;
 	end, "Event.UI.Input.Mouse.Left.Down")
-
-    --thing.Event.LeftUp = function()
-    --    if not Wykkyd.Outfitter.LeftMouseDown then
-    --        local cursor, held = Inspect.Cursor()
-    --        if(cursor and cursor == "item") then
-    --            pcall(Command.Item.Standard.Drop, held)
-    --            if includeEquip then 
-    --                Wykkyd.Outfitter.AttemptEquip(held,slot); 
-    --                Wykkyd.Outfitter.ChangeGear()
-    --            end
-    --        end
-    --    end
-    --    Wykkyd.Outfitter.LeftMouseDown = false
-    --end
 
 	thing:EventAttach(Event.UI.Input.Mouse.Left.Up, function(self, h)
         if not Wykkyd.Outfitter.LeftMouseDown then
@@ -98,10 +82,6 @@ function Wykkyd.Outfitter.ComboBox.Create(myCount, parent, label, default, listI
         end
     end
     
-    --local menu = Library.LibSimpleWidgets.Select(wyk.UniqueName("Control_Dropdown"), control)
-    --menu.GetItems = listItems
-    --menu.SetSelected
-    
 	local dropDownIcon = wyk.frame.CreateTexture("Control_Dropdown", tfValue)
 	dropDownIcon:SetTexture(wykkydImageSource, "resource/wtDropDown.png")
 	dropDownIcon:SetHeight(tfValue:GetHeight())
@@ -117,8 +97,7 @@ function Wykkyd.Outfitter.ComboBox.Create(myCount, parent, label, default, listI
     control.SetItems = function(ctrl, inItems)
         menu:SetItems(inItems)
     end
-    
-	--dropDownIcon.Event.LeftClick = function() menu:Toggle() end
+
 	dropDownIcon:EventAttach(Event.UI.Input.Mouse.Left.Click, function(self, h)
 		menu:Toggle()
 	end, "Event.UI.Input.Mouse.Left.Click")
@@ -194,6 +173,9 @@ local function clearFields(myCount, content)
 end
 
 function Wykkyd.Outfitter.PushSettings(myCount, content, vals)
+	rolesAmount = 0
+    table.foreach(Inspect.Role.List(),function()rolesAmount=rolesAmount+1 end)
+
     if Wykkyd.Outfitter.Selected[myCount] == nil then Wykkyd.Outfitter.Selected[myCount] = {} end
     if lst == nil then lst = wyk.vars.Icons end
     if not Wykkyd.Outfitter.ContextWindow[myCount] then return end
@@ -238,8 +220,7 @@ function Wykkyd.Outfitter.PushSettings(myCount, content, vals)
         if Wykkyd.Outfitter.Selected[myCount].RoleChk ~= nil then content.changeRole:SetChecked(Wykkyd.Outfitter.Selected[myCount].RoleChk)  end
         if Wykkyd.Outfitter.Selected[myCount].Role ~= nil then 
             local iMin = 1
-            -- local iMax = 6
-			local iMax = 20
+			local iMax = rolesAmount
             local iPos = 1
             if not Wykkyd.Outfitter.Selected[myCount].Role then iPos = 1
             else
@@ -253,7 +234,7 @@ function Wykkyd.Outfitter.PushSettings(myCount, content, vals)
             if Wykkyd.Outfitter.Selected[myCount].KaruulChk ~= nil then content.manageKaruul:SetChecked(Wykkyd.Outfitter.Selected[myCount].KaruulChk) end
             if Wykkyd.Outfitter.Selected[myCount].Set1 ~= nil then 
                 local iMin = 0
-                local iMax = 10
+                local iMax = rolesAmount
                 local iPos = 1
                 if not Wykkyd.Outfitter.Selected[myCount].Set1 then iPos = 1
                 else
@@ -265,7 +246,7 @@ function Wykkyd.Outfitter.PushSettings(myCount, content, vals)
             end
             if Wykkyd.Outfitter.Selected[myCount].Set2 ~= nil then
                 local iMin = 0
-                local iMax = 10
+                local iMax = rolesAmount
                 local iPos = 1
                 if not Wykkyd.Outfitter.Selected[myCount].Set2 then iPos = 1
                 else
@@ -329,6 +310,10 @@ local function makeGroup(target, name, h, w, l, bg, border)
 end
 
 function Wykkyd.Outfitter.BuildForm(myCount)
+	rolesAmount = 0
+    table.foreach(Inspect.Role.List(),function()rolesAmount=rolesAmount+1 end)
+
+
     if lst == nil then lst = wyk.vars.Icons end
     if not Wykkyd.Outfitter.ContextWindow[myCount] then return end
     local window = Wykkyd.Outfitter.ContextWindow[myCount]
@@ -449,19 +434,7 @@ function Wykkyd.Outfitter.BuildForm(myCount)
     local btnChangeIcon = wyk.frame.CreateButton( uName.."_iconChgBtn", formGroup4)
     btnChangeIcon:SetText("Change Icon")
     btnChangeIcon:SetLayer(23)
-    --btnChangeIcon.Event.LeftClick = function()
-    --   Wykkyd.Outfitter.ImageSlider(
-	--		myCount, 
-    --        content, 
-    --        {One = "TOPCENTER", Two = "TOPCENTER", X = 0, Y = 120}, 
-    --        30, 
-    --        content.iconSelected, 
-    --        function(value) 
-    --            content.iconSelected = value;
-    --            content.icon:SetTexture( lst[value].src, lst[value].file );
-    --        end
-    --    )
-    --end
+
 	btnChangeIcon:EventAttach(Event.UI.Input.Mouse.Left.Click, function(self, h)
         Wykkyd.Outfitter.ImageSlider(
 			myCount, 
@@ -497,9 +470,7 @@ function Wykkyd.Outfitter.BuildForm(myCount)
     Wykkyd.Outfitter.AttachDragControls(chkRole, false)
     Wykkyd.Outfitter.AttachDragControls(chkRoleLbl, false)
     content.changeRole = chkRole
-    --local roleSlider = wyk.frame.SlideFrame(uName.."_roleSlider", formGroup5, 92, {L=1, H=6}, 1, nil)
-    local rolesAmount = 0
-    table.foreach(Inspect.Role.List(),function()rolesAmount=rolesAmount+1 end)
+
     local roleSlider = wyk.frame.SlideFrame(uName.."_roleSlider", formGroup5, 92, {L=1, H=rolesAmount}, 1, nil)
     Wykkyd.Outfitter.AttachDragControls(chkRole, false)
     Wykkyd.Outfitter.AttachScrollControls(roleSlider)
@@ -525,7 +496,7 @@ function Wykkyd.Outfitter.BuildForm(myCount)
         Wykkyd.Outfitter.AttachDragControls(chkKaruulLbl, false)
         content.manageKaruul = chkKaruul
         
-        local karuulSlider1 = wyk.frame.SlideFrame(uName.."_KASlider1", formGroup6, 134, {L=0, H=10}, 1, "Set (0 is off)")
+        local karuulSlider1 = wyk.frame.SlideFrame(uName.."_KASlider1", formGroup6, 134, {L=0, H=rolesAmount}, 1, "Set (0 is off)")
         Wykkyd.Outfitter.AttachDragControls(chkKaruul, false)
         karuulSlider1.label:SetFontColor(cHdr.r, cHdr.g, cHdr.b, 1)
         karuulSlider1:SetLayer(20)
@@ -533,7 +504,7 @@ function Wykkyd.Outfitter.BuildForm(myCount)
         Wykkyd.Outfitter.AttachScrollControls(karuulSlider1)
         content.karuulSet1 = karuulSlider1
         
-        local karuulSlider2 = wyk.frame.SlideFrame(uName.."_KASlider2", formGroup6, 134, {L=0, H=10}, 1, "Subset (0 is off)")
+        local karuulSlider2 = wyk.frame.SlideFrame(uName.."_KASlider2", formGroup6, 134, {L=0, H=rolesAmount}, 1, "Subset (0 is off)")
         Wykkyd.Outfitter.AttachDragControls(chkKaruul, false)
         karuulSlider2.label:SetFontColor(cHdr.r, cHdr.g, cHdr.b, 1)
         karuulSlider2:SetLayer(20)
@@ -576,45 +547,15 @@ function Wykkyd.Outfitter.BuildForm(myCount)
     alertChannel:SetPoint("RIGHTCENTER", formGroup7, "RIGHTCENTER", -70, 0)
     
     Wykkyd.Outfitter.ClearSettings(myCount, content)
-    
-    --formEquipList.Event.MouseOut = function()
-    --    WT.Utility.ClearKeyFocus(formEquipList.value)
-    --end
+
 	formEquipList:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function(self, h)
 		WT.Utility.ClearKeyFocus(formEquipList.value)
 	end, "Event.UI.Input.Mouse.Cursor.Out")
 
-    --formEquipName.Event.MouseOut = function()
-    --    WT.Utility.ClearKeyFocus(formEquipName.value)
-    --end
 	formEquipName:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function(self, h)
 		WT.Utility.ClearKeyFocus(formEquipName.value)
 	end, "Event.UI.Input.Mouse.Cursor.Out")
 
-    --formSaveBtn.Event.LeftClick = function()
-    --    if formEquipName.value:GetText() ~= nil then
-    --        if wyk.func.Trim(formEquipName.value:GetText()) ~= "" then
-    --            Wykkyd.Outfitter.Selected[myCount].Name = content.equipsetName.value:GetText()
-    --            Wykkyd.Outfitter.Selected[myCount].ButtonChk = content.makeIcon:GetChecked()
-    --            Wykkyd.Outfitter.Selected[myCount].Icon = lst[content.iconSelected].file
-    --            Wykkyd.Outfitter.Selected[myCount].RoleChk = content.changeRole:GetChecked()
-    --            Wykkyd.Outfitter.Selected[myCount].Role = content.targetRole.slider:GetPosition()
-    --            Wykkyd.Outfitter.Selected[myCount].KaruulChk = content.manageKaruul:GetChecked()
-    --            Wykkyd.Outfitter.Selected[myCount].Set1 = content.karuulSet1.slider:GetPosition()
-    --            Wykkyd.Outfitter.Selected[myCount].Set2 = content.karuulSet2.slider:GetPosition()
-    --            Wykkyd.Outfitter.Selected[myCount].AlertChk = content.selectedAlertCheck:GetChecked()
-    --           Wykkyd.Outfitter.Selected[myCount].AlertText = content.selectedAlertText:GetText()
-    --            Wykkyd.Outfitter.Selected[myCount].AlertChannel = content.selectedAlertChannel:GetText()
-    --            Wykkyd.Outfitter.EquipSets.Save(myCount, Wykkyd.Outfitter.Selected[myCount].EquipmentSet)
-    --            cycleSettings(myCount, content)
-    --            formEquipList:SetItems(Wykkyd.Outfitter.ContextConfig[myCount].EquipSetList)
-    --            formEquipList:SetText(Wykkyd.Outfitter.Selected[myCount].EquipmentSet)
-    --            lst = wyk.vars.Icons
-    --        end
-    --    end
-    --    WT.Utility.ClearKeyFocus(formEquipList.value)
-    --    WT.Utility.ClearKeyFocus(formEquipName.value)
-    --end
 	
 	formSaveBtn:EventAttach(Event.UI.Input.Mouse.Left.Click, function(self, h)
         if formEquipName.value:GetText() ~= nil and formEquipName.value:GetText() ~= "" then
@@ -640,16 +581,7 @@ function Wykkyd.Outfitter.BuildForm(myCount)
         WT.Utility.ClearKeyFocus(formEquipList.value)
         WT.Utility.ClearKeyFocus(formEquipName.value)
 	end, "Event.UI.Input.Mouse.Left.Click")
-	
-    --formLoadBtn.Event.LeftClick = function() 
-    --    Wykkyd.Outfitter.Selected[myCount].EquipmentSet = Wykkyd.Outfitter.chosenEquipmentSet[myCount]
-    --    cycleSettings(myCount, content) 
-    --    formEquipList:SetItems(Wykkyd.Outfitter.ContextConfig[myCount].EquipSetList)
-    --    formEquipList:SetText(Wykkyd.Outfitter.Selected[myCount].EquipmentSet)
-    --    lst = wyk.vars.Icons
-    --    WT.Utility.ClearKeyFocus(formEquipList.value)
-    --    WT.Utility.ClearKeyFocus(formEquipName.value)
-    --end
+
 	formLoadBtn:EventAttach(Event.UI.Input.Mouse.Left.Click, function(self, h)
         Wykkyd.Outfitter.Selected[myCount].EquipmentSet = Wykkyd.Outfitter.chosenEquipmentSet[myCount]
         cycleSettings(myCount, content) 
@@ -660,15 +592,6 @@ function Wykkyd.Outfitter.BuildForm(myCount)
         WT.Utility.ClearKeyFocus(formEquipName.value)
 	end, "Event.UI.Input.Mouse.Left.Click")
 	
-    --formClearBtn.Event.LeftClick = function()
-    --    Wykkyd.Outfitter.Selected[myCount].EquipmentSet = 0
-    --    cycleSettings(myCount, content) 
-    --    formEquipList:SetItems(Wykkyd.Outfitter.ContextConfig[myCount].EquipSetList)
-    --    formEquipList:SetText(Wykkyd.Outfitter.Selected[myCount].EquipmentSet)
-    --    lst = wyk.vars.Icons
-    --    WT.Utility.ClearKeyFocus(formEquipList.value)
-    --    WT.Utility.ClearKeyFocus(formEquipName.value)
-    --end
 	formClearBtn:EventAttach(Event.UI.Input.Mouse.Left.Click, function(self, h)
         Wykkyd.Outfitter.Selected[myCount].EquipmentSet = 0
         cycleSettings(myCount, content) 
@@ -678,19 +601,7 @@ function Wykkyd.Outfitter.BuildForm(myCount)
         WT.Utility.ClearKeyFocus(formEquipList.value)
         WT.Utility.ClearKeyFocus(formEquipName.value)
 	end, "Event.UI.Input.Mouse.Left.Click")
-	
-    --formDelBtn.Event.LeftClick = function()
-    --    Wykkyd.Outfitter.EquipSets.Delete(myCount, Wykkyd.Outfitter.chosenEquipmentSet[myCount])
-    --    Wykkyd.Outfitter.PrepList(myCount)
-    --    Wykkyd.Outfitter.ClearSettings(myCount, content)
-    --    cycleSettings(myCount, content) 
-    --    formEquipList:SetItems(Wykkyd.Outfitter.ContextConfig[myCount].EquipSetList)
-    --    formEquipList:SetText(Wykkyd.Outfitter.Selected[myCount].EquipmentSet)
-    --    lst = wyk.vars.Icons
-    --    WT.Utility.ClearKeyFocus(formEquipList.value)
-    --    WT.Utility.ClearKeyFocus(formEquipName.value)
-    --end
-	
+
 	formDelBtn:EventAttach(Event.UI.Input.Mouse.Left.Click, function(self, h)
         Wykkyd.Outfitter.EquipSets.Delete(myCount, Wykkyd.Outfitter.chosenEquipmentSet[myCount])
         Wykkyd.Outfitter.PrepList(myCount)
@@ -704,5 +615,3 @@ function Wykkyd.Outfitter.BuildForm(myCount)
 	end, "Event.UI.Input.Mouse.Left.Click")
 	
 end
-
-

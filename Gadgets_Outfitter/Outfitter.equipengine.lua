@@ -432,6 +432,5 @@ end
 
 if not bHasBeenForced then
 	Command.Event.Attach(Event.System.Update.Begin, Wykkyd.Outfitter.ChangeGear, "Gear Change Monitor")
-    --table.insert(Event.System.Update.Begin, {Wykkyd.Outfitter.ChangeGear, "Gadgets_Outfitter", "Gear Change Monitor"})
     bHasBeenForced = true
 end
