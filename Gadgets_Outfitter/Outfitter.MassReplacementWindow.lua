@@ -50,12 +50,11 @@ function Wykkyd.Outfitter.OpenMassReplacementWindow(contextCount)
 	
 	local content = window:GetContent()
 	
-	local outfitFrame = wyk.frame.CreateFrame( fldName.."_frame", content)
-	outfitFrame:SetPoint("TOPLEFT", content, "TOPLEFT", 8, 8)
-	outfitFrame:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", -8, -8)	
-	--outfitFrame.Event.LeftDown = function() Wykkyd.Outfitter.LeftMouseDown = true; end
+	local replacementFrame = wyk.frame.CreateFrame( fldName.."_frame", content)
+	replacementFrame:SetPoint("TOPLEFT", content, "TOPLEFT", 8, 8)
+	replacementFrame:SetPoint("BOTTOMRIGHT", content, "BOTTOMRIGHT", -8, -8)	
 	
-	outfitFrame:EventAttach(Event.UI.Input.Mouse.Left.Down, function(self, h)
+	replacementFrame:EventAttach(Event.UI.Input.Mouse.Left.Down, function(self, h)
 		Wykkyd.Outfitter.LeftMouseDown = true;
 	end, "Event.UI.Input.Mouse.Left.Down")
 	

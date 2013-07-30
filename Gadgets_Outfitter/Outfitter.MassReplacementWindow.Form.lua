@@ -31,11 +31,9 @@ function Wykkyd.Outfitter.MassReplacementWindow.BuildForm(myCount)
 		slotBorder:SetHeight(borderSize)
 		slotBorder:SetPoint("CENTER", slotWrapper, "CENTER", 0, 0)
 		slotBorder:SetLayer(22)
-    if placeHolder then 
-        slotBorder:SetTexture(wyk.vars.Images.borders.disabled.src, wyk.vars.Images.borders.disabled.file)
-        slotBorder:SetAlpha(.35) 
-    else
-        slotBorder:SetAlpha(.9)
+		slotBorder:SetTexture(wyk.vars.Images.borders.disabled.src, wyk.vars.Images.borders.disabled.file)
+		slotBorder:SetAlpha(.35) 
+		slotBorder:SetAlpha(.9)
     end
     slotWrapper.border = slotBorder
 	local slotIcon = wyk.frame.CreateTexture(uName.."_icon", slotWrapper, {
@@ -159,23 +157,25 @@ function Wykkyd.Outfitter.MassReplacementWindow.BuildForm(myCount)
 	saveButton:SetPoint("CENTER", fg, "CENTER", 0, margin+ 20)
 	saveButton:SetEnabled(saveBtnAllowed)
 	if saveBtnAllowed == true then
-	saveButton:EventAttach(Event.UI.Input.Mouse.Left.Up, function(self, h)
-	if(offHandCheckbox:GetChecked()) then
-		local newCategory = ""
-		local tempCat = split(itemToSave.category,"%S+")
-		if tempCat[3] == "ring" then
-			newCategory = tempCat[1].." "..tempCat[2].." off"..tempCat[3]
-		elseif tempCat[2] == "onehand" then
-			newCategory = tempCat[1].." off"..tempCat[2].." "..tempCat[3]
+		saveButton:EventAttach(Event.UI.Input.Mouse.Left.Up, function(self, h)
+		if(offHandCheckbox:GetChecked()) then
+			local newCategory = ""
+			local tempCat = split(itemToSave.category,"%S+")
+			if tempCat[3] == "ring" then
+				newCategory = tempCat[1].." "..tempCat[2].." off"..tempCat[3]
+			elseif tempCat[2] == "onehand" then
+				newCategory = tempCat[1].." off"..tempCat[2].." "..tempCat[3]
+			end
+			itemToSave.category = newCategory
 		end
-		itemToSave.category = newCategory
-	end
-	slotIcon:SetTexture(wyk.vars.Images.slots.chest.src, wyk.vars.Images.slots.chest.file)
-	if itemToSave.id ~= nil then
-	Wykkyd.Outfitter.SaveItem(itemToSave, indexes, myCount)
-	else
-	errorLbl:SetText("Drag an item in the slot first!")
-	end
+		if itemToSave.id ~= nil then
+			Wykkyd.Outfitter.SaveItem(itemToSave, indexes, myCount)
+			slotIcon:SetTexture(wyk.vars.Images.slots.chest.src, wyk.vars.Images.slots.chest.file)
+			slotBorder:SetTexture(wyk.vars.Images.borders.disabled.src, wyk.vars.Images.borders.disabled.file)
+			itemToSave = {}
+		else
+			errorLbl:SetText("Drag an item in the slot first!")
+		end
 	end
 	, "Event.UI.Input.Mouse.Left.Up")
 	end
