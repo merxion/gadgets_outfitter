@@ -232,7 +232,7 @@ function Wykkyd.Outfitter.PushSettings(myCount, content, vals)
         if not Wykkyd.Outfitter.ContextConfig[myCount].ignoreKaruul then
             if Wykkyd.Outfitter.Selected[myCount].KaruulChk ~= nil then content.manageKaruul:SetChecked(Wykkyd.Outfitter.Selected[myCount].KaruulChk) end
             if Wykkyd.Outfitter.Selected[myCount].Set1 ~= nil then 
-                local iMin = 0
+                local iMin = 1
                 local iMax = rolesAmount
                 local iPos = 1
                 if not Wykkyd.Outfitter.Selected[myCount].Set1 then iPos = 1
@@ -245,7 +245,7 @@ function Wykkyd.Outfitter.PushSettings(myCount, content, vals)
             end
             if Wykkyd.Outfitter.Selected[myCount].Set2 ~= nil then
                 local iMin = 0
-                local iMax = rolesAmount
+                local iMax = 10
                 local iPos = 1
                 if not Wykkyd.Outfitter.Selected[myCount].Set2 then iPos = 1
                 else
@@ -492,7 +492,7 @@ function Wykkyd.Outfitter.BuildForm(myCount)
         Wykkyd.Outfitter.AttachDragControls(chkKaruulLbl, false)
         content.manageKaruul = chkKaruul
         
-        local karuulSlider1 = wyk.frame.SlideFrame(uName.."_KASlider1", formGroup6, 134, {L=0, H=rolesAmount}, 1, "Set (0 is off)")
+        local karuulSlider1 = wyk.frame.SlideFrame(uName.."_KASlider1", formGroup6, 134, {L=1, H=rolesAmount}, 1, "Set")
         Wykkyd.Outfitter.AttachDragControls(chkKaruul, false)
         karuulSlider1.label:SetFontColor(cHdr.r, cHdr.g, cHdr.b, 1)
         karuulSlider1:SetLayer(20)
