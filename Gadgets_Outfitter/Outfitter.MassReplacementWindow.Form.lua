@@ -173,6 +173,10 @@ function Wykkyd.Outfitter.MassReplacementWindow.BuildForm(myCount)
 			slotIcon:SetTexture(wyk.vars.Images.slots.chest.src, wyk.vars.Images.slots.chest.file)
 			slotBorder:SetTexture(wyk.vars.Images.borders.disabled.src, wyk.vars.Images.borders.disabled.file)
 			itemToSave = {}
+			offHandCheckbox:SetChecked(false)
+			offHandCheckbox:SetVisible(false)
+			offHandCheckbox:SetEnabled(false)
+			offhandCheckBoxLabel:SetVisible(false)
 		else
 			errorLbl:SetText("Drag an item in the slot first!")
 		end
