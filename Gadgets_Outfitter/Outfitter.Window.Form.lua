@@ -173,8 +173,7 @@ local function clearFields(myCount, content)
 end
 
 function Wykkyd.Outfitter.PushSettings(myCount, content, vals)
-	rolesAmount = 0
-    table.foreach(Inspect.Role.List(),function()rolesAmount=rolesAmount+1 end)
+	rolesAmount = getRoleAmount()
 
     if Wykkyd.Outfitter.Selected[myCount] == nil then Wykkyd.Outfitter.Selected[myCount] = {} end
     if lst == nil then lst = wyk.vars.Icons end
@@ -220,7 +219,7 @@ function Wykkyd.Outfitter.PushSettings(myCount, content, vals)
         if Wykkyd.Outfitter.Selected[myCount].RoleChk ~= nil then content.changeRole:SetChecked(Wykkyd.Outfitter.Selected[myCount].RoleChk)  end
         if Wykkyd.Outfitter.Selected[myCount].Role ~= nil then 
             local iMin = 1
-			local iMax = rolesAmount
+	    local iMax = rolesAmount
             local iPos = 1
             if not Wykkyd.Outfitter.Selected[myCount].Role then iPos = 1
             else
@@ -310,10 +309,7 @@ local function makeGroup(target, name, h, w, l, bg, border)
 end
 
 function Wykkyd.Outfitter.BuildForm(myCount)
-	rolesAmount = 0
-    table.foreach(Inspect.Role.List(),function()rolesAmount=rolesAmount+1 end)
-
-
+    rolesAmount = getRoleAmount()
     if lst == nil then lst = wyk.vars.Icons end
     if not Wykkyd.Outfitter.ContextWindow[myCount] then return end
     local window = Wykkyd.Outfitter.ContextWindow[myCount]
@@ -614,4 +610,12 @@ function Wykkyd.Outfitter.BuildForm(myCount)
         WT.Utility.ClearKeyFocus(formEquipName.value)
 	end, "Event.UI.Input.Mouse.Left.Click")
 	
+end
+
+local function getRoleAmount()
+  rolesAmount = 0
+  for k,v in pairs(Inspect.Role.List()) do
+	rolesAmount=rolesAmount+1
+  end
+  return rolesAmount
 end
