@@ -34,7 +34,6 @@ function Wykkyd.Outfitter.MassReplacementWindow.BuildForm(myCount)
 		slotBorder:SetTexture(wyk.vars.Images.borders.disabled.src, wyk.vars.Images.borders.disabled.file)
 		slotBorder:SetAlpha(.35) 
 		slotBorder:SetAlpha(.9)
-    end
     slotWrapper.border = slotBorder
 	local slotIcon = wyk.frame.CreateTexture(uName.."_icon", slotWrapper, {
 		SetPoint = {point="CENTER", target=slotWrapper, targetpoint="CENTER", x=0, y=0},

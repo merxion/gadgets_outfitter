@@ -173,7 +173,7 @@ local function clearFields(myCount, content)
 end
 
 function Wykkyd.Outfitter.PushSettings(myCount, content, vals)
-	rolesAmount = getRoleAmount()
+	rolesAmount = Wykkyd.Outfitter.GetRoleAmount()
 
     if Wykkyd.Outfitter.Selected[myCount] == nil then Wykkyd.Outfitter.Selected[myCount] = {} end
     if lst == nil then lst = wyk.vars.Icons end
@@ -309,7 +309,7 @@ local function makeGroup(target, name, h, w, l, bg, border)
 end
 
 function Wykkyd.Outfitter.BuildForm(myCount)
-    rolesAmount = getRoleAmount()
+    rolesAmount = Wykkyd.Outfitter.GetRoleAmount()
     if lst == nil then lst = wyk.vars.Icons end
     if not Wykkyd.Outfitter.ContextWindow[myCount] then return end
     local window = Wykkyd.Outfitter.ContextWindow[myCount]
@@ -612,7 +612,7 @@ function Wykkyd.Outfitter.BuildForm(myCount)
 	
 end
 
-local function getRoleAmount()
+function Wykkyd.Outfitter.GetRoleAmount()
   rolesAmount = 0
   for k,v in pairs(Inspect.Role.List()) do
 	rolesAmount=rolesAmount+1
