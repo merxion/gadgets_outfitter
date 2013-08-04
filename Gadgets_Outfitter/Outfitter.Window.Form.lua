@@ -500,7 +500,7 @@ function Wykkyd.Outfitter.BuildForm(myCount)
         Wykkyd.Outfitter.AttachScrollControls(karuulSlider1)
         content.karuulSet1 = karuulSlider1
         
-        local karuulSlider2 = wyk.frame.SlideFrame(uName.."_KASlider2", formGroup6, 134, {L=0, H=rolesAmount}, 1, "Subset (0 is off)")
+        local karuulSlider2 = wyk.frame.SlideFrame(uName.."_KASlider2", formGroup6, 134, {L=0, H=10}, 1, "Subset (0 is off)")
         Wykkyd.Outfitter.AttachDragControls(chkKaruul, false)
         karuulSlider2.label:SetFontColor(cHdr.r, cHdr.g, cHdr.b, 1)
         karuulSlider2:SetLayer(20)
