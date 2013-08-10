@@ -4,6 +4,7 @@ local OutfitButtons = {}
 local gadgetFactory = false
 local gadgetConfig = false
 local gadgetId = false
+local labels = {}
 
 local started = false
 
@@ -194,8 +195,13 @@ local function prepButtonbar(myCount, targ)
 					label:SetVisible(false)
 					label:SetPoint("CENTER",bIcon,"CENTER",0,0)
 					
+					bIcon:EventAttach(Event.UI.Input.Mouse.Left.Down, function(self, h)
+						label:SetVisible(false)
+						print("here")
+					end, "Event.UI.Input.Mouse.Left.Click")
 					bIcon:EventAttach(Event.UI.Input.Mouse.Cursor.In, function(self, h)
 						label:SetVisible(true)
+						print("lastLaugh")
 					end, "Event.UI.Input.Mouse.Cursor.in")
 					bIcon:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function(self, h)
 						label:SetVisible(false)
