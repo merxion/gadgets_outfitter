@@ -76,7 +76,7 @@ local function prepButtonbar(myCount, targ)
         local _buttonbarIconSize = Wykkyd.Outfitter.ContextConfig[myCount].buttonbarIconSize
         local _buttonbarBorderImage = Wykkyd.Outfitter.ContextConfig[myCount].buttonbarBorderImage
         local _buttonbarBorderImageSrc = Wykkyd.Outfitter.ContextConfig[myCount].buttonbarBorderImageSrc
-
+		local _buttonBarShowLabels = Wykkyd.Outfitter.ContextConfig[myCount].checkboxLabelsEnabler
         local lastObj = nil
         local uName = wyk.UniqueName("wykButtonBar")
         local borderSize = (128 * (_buttonbarIconSize/100))*.85
@@ -186,6 +186,21 @@ local function prepButtonbar(myCount, targ)
 					--end, "Event.UI.Input.Mouse.Left.Click")
 					
                 end
+                if _buttonBarShowLabels then
+					local label = wyk.frame.CreateText("label", targ )
+					label:SetText(barButtons[ii].name)
+					label:SetBackgroundColor(0,0,0,1)
+					label:SetLayer(40)
+					label:SetVisible(false)
+					label:SetPoint("CENTER",bIcon,"CENTER",0,0)
+					
+					bIcon:EventAttach(Event.UI.Input.Mouse.Cursor.In, function(self, h)
+						label:SetVisible(true)
+					end, "Event.UI.Input.Mouse.Cursor.in")
+					bIcon:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function(self, h)
+						label:SetVisible(false)
+					end, "Event.UI.Input.Mouse.Cursor.in")
+				end
                 
                 Wykkyd.Outfitter.Bbar[myCount][barButtons[ii].id] = bBorder
             end
@@ -426,6 +441,15 @@ local function ConfigDialog(container)
     --expandDir.label:SetFontColor(cHdr.r, cHdr.g, cHdr.b, 1)
     configFrame.expandDirection = expandDir
     expandDir:SetLayer(20)
+    
+    local labelsEnabler = wyk.frame.CreateRiftCheckbox("labelCheckbox", configFrame)
+	labelsEnabler:SetPoint("TOPCENTER", expandDir, "BOTTOMCENTER", -10,20)
+	labelsEnabler:SetLayer(20)
+	configFrame.labelsEnabler = labelsEnabler
+    local labelsEnablerLabel = wyk.frame.CreateText("labelsEnablerLabel",configFrame)
+    labelsEnablerLabel:SetText("Enable labels on set buttons")
+    labelsEnablerLabel:SetLayer(20)
+    labelsEnablerLabel:SetPoint("TOPCENTER", expandDir, "BOTTOMCENTER", 80,20)
 end
 
 local function GetConfiguration()
@@ -433,6 +457,7 @@ local function GetConfiguration()
         buttonbarIconAlpha = Wykkyd.Outfitter.ConfigFrame.iconAlpha.slider:GetPosition(),
         buttonbarIconSize = Wykkyd.Outfitter.ConfigFrame.iconSize.slider:GetPosition(),
         buttonbarExpandDirection = Wykkyd.Outfitter.ConfigFrame.expandDirection.value:GetText(),
+		checkboxLabelsEnabler = Wykkyd.Outfitter.ConfigFrame.labelsEnabler:GetChecked(),
     }
     local brdPos = Wykkyd.Outfitter.ConfigFrame.borderChooser.slider:GetPosition()
     local icoPos = Wykkyd.Outfitter.ConfigFrame.iconChooser.slider:GetPosition()
@@ -481,6 +506,11 @@ local function SetConfiguration(config)
     Wykkyd.Outfitter.ConfigFrame.iconAlpha.slider:SetPosition( config.buttonbarIconAlpha )
     Wykkyd.Outfitter.ConfigFrame.iconSize.slider:SetPosition( config.buttonbarIconSize )
     Wykkyd.Outfitter.ConfigFrame.expandDirection.value:SetText( config.buttonbarExpandDirection )
+    --added this in for all the older configs that didn't have the checkbox. this'll prevent people from having to reset they're buttons completely
+    if config.checkboxLabelsEnabler == nil then
+		config.checkboxLabelsEnabler = false
+	end
+    Wykkyd.Outfitter.ConfigFrame.labelsEnabler:SetChecked(config.checkboxLabelsEnabler)
 end
 
 local function tryAdd(num) local r = num+1 end
