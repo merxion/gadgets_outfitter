@@ -247,6 +247,7 @@ function Wykkyd.Outfitter.AttemptEquip(id, targetSlot, hasRoom)
                     if target == "" then
                         for idx, slot in pairs(itemType.slotID) do
                             target = slot
+                            
                             break
                         end
                     end
@@ -290,8 +291,11 @@ function Wykkyd.Outfitter.AttemptEquip(id, targetSlot, hasRoom)
                                 Wykkyd.Outfitter.RegisterGearSwap( 1, source, target, id, false, false, { thing = id, inPlace = source, notInPlace = false, } )
                             end
                         else
-                            --pcall(Command.Item.Move, source, target)
-                            Wykkyd.Outfitter.RegisterGearSwap( 1, source, target, id, false, false, { thing = id, inPlace = source, notInPlace = false, } )
+							if hasRoom > 0 then
+                            Wykkyd.Outfitter.RegisterGearSwap( 1, source, "BAG", id, false, false, { thing = id, inPlace = source, notInPlace = false, } )
+                            Wykkyd.Outfitter.RegisterGearSwap( 2, "BAG", target, id, false, false, { thing = id, inPlace = false, notInPlace = source, } )
+                            end
+                            
                         end
                     end
                 end
@@ -366,7 +370,7 @@ local function processStage(n)
                             end
                         else
                             if pcall(Command.Item.Move, thingsToMove[ii].from, thingsToMove[ii].to) then
-                                --print("Moved "..thingsToMove[ii].wait.thing.." from "..thingsToMove[ii].from.." to "..thingsToMove[ii].to)
+                                print("Moved "..thingsToMove[ii].wait.thing.." from "..thingsToMove[ii].from.." to "..thingsToMove[ii].to)
                                 waitingCount = rebuildthingsToMove(thingsToMove, ii)
                                 inProcess = false
                                 return 
