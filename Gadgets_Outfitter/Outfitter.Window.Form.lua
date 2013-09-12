@@ -170,6 +170,8 @@ local function clearFields(myCount, content)
 	content.selectedAlertCheck:SetChecked(false)
 	content.selectedAlertText:SetText("I'm changing roles, give me a sec...")
 	content.selectedAlertChannel:SetText("Raid")
+	content.changeWardrobe:SetChecked(false)
+	content.targetWardrobe.slider:SetPosition(0)
 end
 
 function Wykkyd.Outfitter.PushSettings(myCount, content, vals)
@@ -190,6 +192,8 @@ function Wykkyd.Outfitter.PushSettings(myCount, content, vals)
         Wykkyd.Outfitter.Selected[myCount].AlertChk = vals.alertCheck
         Wykkyd.Outfitter.Selected[myCount].AlertText = vals.alertText
         Wykkyd.Outfitter.Selected[myCount].AlertChannel = vals.alertChannel
+        Wykkyd.Outfitter.Selected[myCount].WardrobeChk = vals.changeWardrobe
+        Wykkyd.Outfitter.Selected[myCount].Wardrobe = vals.targetWardrobe
     end
     clearFields(myCount, content)
     for _, v in pairs(vals.ignored) do
@@ -259,6 +263,19 @@ function Wykkyd.Outfitter.PushSettings(myCount, content, vals)
         if Wykkyd.Outfitter.Selected[myCount].AlertChk ~= nil then content.selectedAlertCheck:SetChecked(Wykkyd.Outfitter.Selected[myCount].AlertChk) end
         content.selectedAlertText:SetText(Wykkyd.Outfitter.Selected[myCount].AlertText or "I'm changing roles, give me a sec...")
         content.selectedAlertChannel:SetText(Wykkyd.Outfitter.Selected[myCount].AlertChannel or "Raid")
+        if Wykkyd.Outfitter.Selected[myCount].WardrobeChk ~= nil then content.changeWardrobe:SetChecked(Wykkyd.Outfitter.Selected[myCount].WardrobeChk) end
+        if Wykkyd.Outfitter.Selected[myCount].Wardrobe ~= nil then
+			local wardrobeMin = 0 --0 is wardrobe off
+			local wardrobeMax = 19 --TODO: 9/12/2013: currently can't check for amount of wardrobes someone has, change as soon as API gives info
+			local iPos = 0
+			if not Wykkyd.Outfitter.Selected[myCount].Wardrobe then iPos = 0
+			else
+				iPos = Wykkyd.Outfitter.Selected[myCount].Wardrobe
+				if iPos < wardrobeMin then iPos = wardrobeMin end
+				if iPos > wardrobeMax then iPos = wardrobeMax end
+			end
+			content.targetWardrobe.slider:SetPosition(iPos)
+		end
     end
 end
 
@@ -279,6 +296,8 @@ function Wykkyd.Outfitter.ClearSettings(myCount, content)
     Wykkyd.Outfitter.Selected[myCount].AlertChk = false
     Wykkyd.Outfitter.Selected[myCount].AlertText = "I'm changing roles, give me a sec..."
     Wykkyd.Outfitter.Selected[myCount].AlertChannel = "Raid"
+    Wykkyd.Outfitter.Selected[myCount].WardrobeChk = false
+    Wykkyd.Outfitter.Selected[myCount].Wardrobe = 1
     clearFields(myCount, content)
 end
 
@@ -365,7 +384,7 @@ function Wykkyd.Outfitter.BuildForm(myCount)
     Wykkyd.Outfitter.AttachDragControls(formDelBtn, false)
     
 	
-	local formGroup2 = makeGroup(content, uName.."_formGroup2", 324, 351, 20, { r = 0, g = 0, b = 0, a = .4 })
+	local formGroup2 = makeGroup(content, uName.."_formGroup2", 384, 351, 20, { r = 0, g = 0, b = 0, a = .4 })
     formGroup2:SetPoint("TOPCENTER", formGroup1, "BOTTOMCENTER", 0, 16)
 	
 	
@@ -515,7 +534,7 @@ function Wykkyd.Outfitter.BuildForm(myCount)
     end
 	
 
-	local formGroup7 = makeGroup(formGroup2, uName.."_formGroup6", 56, 343, 20, innerBackground, innerBorder)
+	local formGroup7 = makeGroup(formGroup2, uName.."_formGroup7", 56, 343, 20, innerBackground, innerBorder)
 	formGroup7:SetPoint("TOPCENTER", formGroup3, "BOTTOMCENTER", 0, 200)
 	 
 	local alertCheck = wyk.frame.CreateCheckbox( uName.."_chkAlert", formGroup7)
@@ -542,6 +561,30 @@ function Wykkyd.Outfitter.BuildForm(myCount)
     alertText:SetPoint("LEFTCENTER", formGroup7, "LEFTCENTER", 4, 9)
     alertChannel:SetPoint("RIGHTCENTER", formGroup7, "RIGHTCENTER", -70, 0)
     
+    local formGroup8 = makeGroup(formGroup2, uName.."_formGroup8", 56, 343, 20, innerBackground, innerBorder)
+	formGroup8:SetPoint("TOPCENTER", formGroup3, "BOTTOMCENTER", 0, 260)
+    
+    local chkWardrobe = wyk.frame.CreateCheckbox( wyk.UniqueName("wykkydChangeWardrobeChk"), formGroup8)
+    local chkWardrobeLbl = wyk.frame.CreateText( wyk.UniqueName("wykkydChangeWardrobeChkLbl"), formGroup8)
+    chkWardrobeLbl:SetText("Change Wardrobes!")
+    chkWardrobeLbl:SetFontColor(cHdr.r, cHdr.g, cHdr.b, 1)
+    chkWardrobe:SetLayer(20)
+    chkWardrobeLbl:SetLayer(20)
+    Wykkyd.Outfitter.AttachDragControls(chkWardrobe, false)
+    Wykkyd.Outfitter.AttachDragControls(chkWardrobeLbl, false)
+    content.changeWardrobe = chkWardrobe
+    
+    local wardrobeSlider = wyk.frame.SlideFrame(uName.."_wardrobeSlider", formGroup8, 134, {L=0, H=19}, 1, "Set(0 is equipment)")
+	Wykkyd.Outfitter.AttachDragControls(wardrobeSlider, false)
+	wardrobeSlider.label:SetFontColor(cHdr.r, cHdr.g, cHdr.b, 1)
+	wardrobeSlider:SetLayer(20)
+	Wykkyd.Outfitter.AttachDragControls(wardrobeSlider, false)
+	Wykkyd.Outfitter.AttachScrollControls(wardrobeSlider)
+	content.targetWardrobe = wardrobeSlider
+    
+    chkWardrobe:SetPoint("LEFTCENTER",formGroup8,"LEFTCENTER",4,-13)
+    chkWardrobeLbl:SetPoint("LEFTCENTER",chkWardrobe,"RIGHTCENTER",4,2)
+    wardrobeSlider:SetPoint("TOPRIGHT", formGroup8, "TOPCENTER", 108, 10)
     Wykkyd.Outfitter.ClearSettings(myCount, content)
 
 	formEquipList:EventAttach(Event.UI.Input.Mouse.Cursor.Out, function(self, h)
@@ -567,6 +610,8 @@ function Wykkyd.Outfitter.BuildForm(myCount)
                 Wykkyd.Outfitter.Selected[myCount].AlertChk = content.selectedAlertCheck:GetChecked()
                 Wykkyd.Outfitter.Selected[myCount].AlertText = content.selectedAlertText:GetText()
                 Wykkyd.Outfitter.Selected[myCount].AlertChannel = content.selectedAlertChannel:GetText()
+                Wykkyd.Outfitter.Selected[myCount].WardrobeChk = content.changeWardrobe:GetChecked()
+                Wykkyd.Outfitter.Selected[myCount].Wardrobe = content.targetWardrobe.slider:GetPosition()
                 Wykkyd.Outfitter.EquipSets.Save(myCount, Wykkyd.Outfitter.Selected[myCount].EquipmentSet)
                 cycleSettings(myCount, content)
                 formEquipList:SetItems(Wykkyd.Outfitter.ContextConfig[myCount].EquipSetList)
@@ -584,7 +629,7 @@ function Wykkyd.Outfitter.BuildForm(myCount)
         formEquipList:SetItems(Wykkyd.Outfitter.ContextConfig[myCount].EquipSetList)
         formEquipList:SetText(Wykkyd.Outfitter.Selected[myCount].EquipmentSet)
         lst = wyk.vars.Icons
-        WT.Utility.ClearKeyFocus(formEquipList.value)
+        WT.Utility.ClearKeyFocus(formEquipList.value)	
         WT.Utility.ClearKeyFocus(formEquipName.value)
 	end, "Event.UI.Input.Mouse.Left.Click")
 	

@@ -5,6 +5,7 @@ local gadgetFactory = false
 local gadgetConfig = false
 local gadgetId = false
 local labels = {}
+local barButtons = {}
 
 local started = false
 
@@ -42,7 +43,6 @@ end
 local function prepButtonbar(myCount, targ)
     if Wykkyd.Outfitter.ContextConfig[myCount].EquipSetList == nil or Wykkyd.Outfitter.ContextConfig[myCount].EquipSetGear == nil then return end
     local iMax = 0
-    local barButtons = {}
     local doCount = 0
     for _, v in pairs(Wykkyd.Outfitter.ContextConfig[myCount].EquipSetList) do
         if v.value > iMax then iMax = v.value end
@@ -66,6 +66,9 @@ local function prepButtonbar(myCount, targ)
                         alertCheck = v.alertCheck,
                         alertText = v.alertText,
                         alertChannel = v.alertChannel,
+                        changeWardrobe = v.changeWardrobe,
+                        targetWardrobe = v.targetWardrobe,
+                        bIcon = nil,
                     }
                 end
             end
@@ -162,6 +165,11 @@ local function prepButtonbar(myCount, targ)
                     macros[macroCount] = wyk.func.LineClose(macroCount).."role "..barButtons[ii].targetRole
                 end
                 
+                if barButtons[ii].changeWardrobe then
+					macroCount = macroCount+1
+					macros[macroCount] = wyk.func.LineClose(macroCount).."wardrobe "..barButtons[ii].targetWardrobe
+				end
+                
                 if barButtons[ii].manageKaruul then
                     local addons = Inspect.Addon.List()
                     if addons.kAlert ~= nil then
@@ -177,14 +185,11 @@ local function prepButtonbar(myCount, targ)
                 
                 if macroCount > 0 then
                     local macro = ""
-                    for ii = 1, macroCount, 1 do
-                        macro = macro..macros[ii]
+                    for macroCounter = 1, macroCount, 1 do
+                        macro = macro..macros[macroCounter]
                     end
-                    --bIcon.Event.LeftClick = macro
-					bIcon:EventMacroSet(Event.UI.Input.Mouse.Left.Down, macro)
-					--bIcon:EventAttach(Event.UI.Input.Mouse.Left.Click, function(self, h)
-					-- macro
-					--end, "Event.UI.Input.Mouse.Left.Click")
+                    bIcon:EventMacroSet(Event.UI.Input.Mouse.Left.Down, macro)
+					
 					
                 end
                 if _buttonBarShowLabels then
@@ -194,6 +199,7 @@ local function prepButtonbar(myCount, targ)
 					label:SetLayer(40)
 					label:SetVisible(false)
 					label:SetPoint("CENTER",bIcon,"CENTER",0,0)
+					bIcon.label = label
 					
 					bIcon:EventAttach(Event.UI.Input.Mouse.Left.Down, function(self, h)
 						label:SetVisible(false)
@@ -207,11 +213,69 @@ local function prepButtonbar(myCount, targ)
 						label:SetVisible(false)
 					end, "Event.UI.Input.Mouse.Cursor.in")
 				end
-                
+                barButtons[ii].bIcon = bIcon
                 Wykkyd.Outfitter.Bbar[myCount][barButtons[ii].id] = bBorder
             end
         end
     end
+end
+
+function Wykkyd.Outfitter.UpdateButton(myCount, vals)
+	if barButtons[vals.id] ~= nil then
+		local img = wyk.func.IconID(vals.icon)
+		local imgList = wyk.vars.Icons
+		barButtons[vals.id].bIcon:SetTexture(imgList[img].src or "Rift", imgList[img].file)
+		barButtons[vals.id].bIcon.label:SetText(vals.name)
+		Wykkyd.Outfitter.Bbar[myCount][vals.id].RootIconImage = imgList[img].file
+		local macros = {}
+		local macroCount = 0
+		if vals.alertCheck then
+						if vals.alertChannel == "Raid" then
+							macroCount = macroCount+1
+							macros[macroCount] = wyk.func.LineClose(macroCount).."ra "..vals.alertText
+						elseif vals.alertChannel == "Group" then
+							macroCount = macroCount+1
+							macros[macroCount] = wyk.func.LineClose(macroCount).."p "..vals.alertText
+						elseif vals.alertChannel == "Yell" then
+							macroCount = macroCount+1
+							macros[macroCount] = wyk.func.LineClose(macroCount).."y "..vals.alertText
+						else
+							macroCount = macroCount+1
+							macros[macroCount] = wyk.func.LineClose(macroCount).."s "..vals.alertText
+						end
+					end
+					
+					if vals.changeRole then
+						macroCount = macroCount+1
+						macros[macroCount] = wyk.func.LineClose(macroCount).."role "..vals.targetRole
+					end
+					
+					if vals.changeWardrobe then
+						macroCount = macroCount+1
+						macros[macroCount] = wyk.func.LineClose(macroCount).."wardrobe "..vals.targetWardrobe
+					end
+					
+					if vals.manageKaruul then
+						local addons = Inspect.Addon.List()
+						if addons.kAlert ~= nil then
+							macroCount = macroCount+1
+							macros[macroCount] = wyk.func.LineClose(macroCount).."karuulalert set="..vals.karuulSet1
+							macroCount = macroCount+1
+							macros[macroCount] = wyk.func.LineClose(macroCount).."karuulalert subset="..vals.karuulSet2
+						end
+					end
+					
+					macroCount = macroCount+1
+					macros[macroCount] = wyk.func.LineClose(macroCount).."outfitter equip "..myCount.." "..vals.id
+					
+					if macroCount > 0 then
+						local macro = ""
+						for macroCounter = 1, macroCount, 1 do
+							macro = macro..macros[macroCounter]
+						end
+						barButtons[vals.id].bIcon:EventMacroSet(Event.UI.Input.Mouse.Left.Down, macro)
+					end
+       end
 end
 
 local function StartUp()

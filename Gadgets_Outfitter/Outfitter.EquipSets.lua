@@ -38,6 +38,7 @@ function Wykkyd.Outfitter.EquipSets.Delete(myCount, id)
 end
 
 function Wykkyd.Outfitter.EquipSets.Save(myCount, id)
+--TODO: clean this function up, don't have to create 2 sets of variables just to put it in a set
     if Wykkyd.Outfitter.Selected[myCount] == nil then Wykkyd.Outfitter.Selected[myCount] = {} end
     local name          = Wykkyd.Outfitter.Selected[myCount].Name
     if name == nil then return end
@@ -52,6 +53,8 @@ function Wykkyd.Outfitter.EquipSets.Save(myCount, id)
     local alertCheck    = Wykkyd.Outfitter.Selected[myCount].AlertChk
     local alertText    = Wykkyd.Outfitter.Selected[myCount].AlertText
     local alertChannel    = Wykkyd.Outfitter.Selected[myCount].AlertChannel
+    local changeWardrobe = Wykkyd.Outfitter.Selected[myCount].WardrobeChk
+    local targetWardrobe = Wykkyd.Outfitter.Selected[myCount].Wardrobe
     if Wykkyd.Outfitter.ContextConfig[myCount].EquipSetGear == nil then Wykkyd.Outfitter.ContextConfig[myCount].EquipSetGear = {}; end
     if Wykkyd.Outfitter.ContextConfig[myCount].EquipSetList == nil then Wykkyd.Outfitter.ContextConfig[myCount].EquipSetList = {}; end
     local updating = true
@@ -142,7 +145,9 @@ function Wykkyd.Outfitter.EquipSets.Save(myCount, id)
     local _alertCheck = alertCheck
     local _alertText = alertText
     local _alertChannel = alertChannel
-    table.insert( Wykkyd.Outfitter.ContextConfig[myCount].EquipSetGear, {
+    local _changeWardrobe = changeWardrobe
+    local _targetWardrobe = targetWardrobe
+    local tempList = {
         id = _id,
         name = _name,
         makeIcon = _makeIcon,
@@ -156,7 +161,12 @@ function Wykkyd.Outfitter.EquipSets.Save(myCount, id)
         alertText = _alertText,
         alertChannel = _alertChannel,
         gear = gearSet,
-    })
+        changeWardrobe = _changeWardrobe,
+        targetWardrobe = _targetWardrobe,
+    }
+    
+    table.insert( Wykkyd.Outfitter.ContextConfig[myCount].EquipSetGear, tempList)
+    Wykkyd.Outfitter.UpdateButton(myCount, tempList)
 end
 
 function Wykkyd.Outfitter.EquipSets.Load(myCount, id)
@@ -185,6 +195,8 @@ function Wykkyd.Outfitter.EquipSets.Load(myCount, id)
             retVal.alertCheck = g.alertCheck
             retVal.alertText = g.alertText
             retVal.alertChannel = g.alertChannel
+            retVal.changeWardrobe = g.changeWardrobe
+            retVal.targetWardrobe = g.targetWardrobe
             for idx, itm in pairs( g.gear ) do
                 if not itm.disabled then
                     if wyk.func.NilSafe(itm.id) ~= "" then

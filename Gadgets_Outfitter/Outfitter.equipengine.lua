@@ -370,7 +370,7 @@ local function processStage(n)
                             end
                         else
                             if pcall(Command.Item.Move, thingsToMove[ii].from, thingsToMove[ii].to) then
-                                print("Moved "..thingsToMove[ii].wait.thing.." from "..thingsToMove[ii].from.." to "..thingsToMove[ii].to)
+                                --print("Moved "..thingsToMove[ii].wait.thing.." from "..thingsToMove[ii].from.." to "..thingsToMove[ii].to)
                                 waitingCount = rebuildthingsToMove(thingsToMove, ii)
                                 inProcess = false
                                 return 
