@@ -88,7 +88,6 @@ function Wykkyd.Outfitter.ComboBox.Create(myCount, parent, label, default, listI
 	dropDownIcon:SetWidth(tfValue:GetHeight())
 	dropDownIcon:SetPoint("TOPLEFT", tfValue, "TOPRIGHT", -10, 0)
     if attachDrag then Wykkyd.Outfitter.AttachDragControls(dropDownIcon, dragFunctional); end
-
 	local menu = WT.Control.Menu.Create(parent, listItems, function(value) selectVal(value) end, sort)
 	menu:SetPoint("TOPRIGHT", dropDownIcon, "BOTTOMCENTER")
     if attachDrag then Wykkyd.Outfitter.AttachDragControls(menu, dragFunctional); end

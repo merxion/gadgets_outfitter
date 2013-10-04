@@ -166,7 +166,9 @@ function Wykkyd.Outfitter.EquipSets.Save(myCount, id)
     }
     
     table.insert( Wykkyd.Outfitter.ContextConfig[myCount].EquipSetGear, tempList)
-    Wykkyd.Outfitter.UpdateButton(myCount, tempList)
+    if updating == true then
+		Wykkyd.Outfitter.UpdateButton(myCount, tempList)
+    end
 end
 
 function Wykkyd.Outfitter.EquipSets.Load(myCount, id)
