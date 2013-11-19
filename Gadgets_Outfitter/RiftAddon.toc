@@ -2,7 +2,7 @@ Identifier  = "Gadgets_Outfitter"
 Name        = "Gadgets: Outfitter"
 Description = "Allows the player to set up and manage outfit sets for swapping gear between character sheet, wardrobes and inventory."
 Author      = "Wykkyd@Laethys Updates by Mael@Wolfsbane, raie@blightweald, hellshound38 "
-Version     = "2.3.3"
+Version     = "2.3.4"
 Email       = "merxion69@hotmail.com"
 Environment = {"2.3"} 
 
