@@ -4,7 +4,7 @@ Description = "Allows the player to set up and manage outfit sets for swapping g
 Author      = "Wykkyd@Laethys Updates by Mael@Wolfsbane, raie@blightweald, hellshound38 "
 Version     = "2.3.4"
 Email       = "merxion69@hotmail.com"
-Environment = {"2.3"} 
+Environment = {"2.4"} 
 
 RunOnStartup    = { 
     "Outfitter.Globals.lua", 
